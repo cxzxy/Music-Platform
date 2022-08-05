@@ -1,7 +1,7 @@
 <template>
   <div class="form">
     <div>
-        <div class="username">
+      <div class="username">
         <el-input v-model="userName" placeholder="请输入用户名"></el-input>
       </div>
       <div class="password">
@@ -14,21 +14,30 @@
       <div class="email">
         <el-input v-model="email" placeholder="请输入邮箱"></el-input>
       </div>
-      <div class="send">
-        <el-button type="info" icon="el-icon-message" circle @click="sendMessage"></el-button>
-      </div>
       <div class="code">
         <el-input v-model="code" placeholder="验证码"></el-input>
       </div>
+      <div class="send" v-if="showTime === null">
+        <el-button
+          type="info"
+          icon="el-icon-message"
+          circle
+          @click="sendMessage"
+        ></el-button>
+      </div>
+      <div class="count-down" v-else>{{ showTime }}</div>
     </div>
     <div class="login">
       <div @click="register">注册</div>
+    </div>
+    <div class="goLogin">
+        <router-link to="/login" class="router-link-active ">已有账号？点击登录</router-link>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 export default {
   name: "Register",
   components: {},
@@ -37,31 +46,59 @@ export default {
       email: "",
       password: "",
       code: "",
-      userName: ""
-    //   state: ""
+      userName: "",
+      timeCounter: null, //计时器
+      showTime: null, //剩余时间
+      //   state: ""
     };
   },
   methods: {
-    sendMessage(){
-        axios({
-            method: 'GET',
-            url: 'http://47.103.198.84:8080/codes/sendVerificationCod',
-            params: {email:this.email}
-        }).then(
-            res=>{
-                alert(res.msg)
-            },
-            err=>{
-                console.log("请求失败")
-            }
-        )
+    // 倒计时显示处理
+    countDownText(s) {
+      this.showTime = `${s}s`;
     },
-    register(){
-        // axios({
-        //     method: 'GET',
-
-        // })
-    }
+    // 倒计时 60秒 不需要很精准
+    countDown(times) {
+      const self = this;
+      // 时间间隔 1秒
+      const interval = 1000;
+      let count = 0;
+      self.timeCounter = setTimeout(countDownStart, interval);
+      function countDownStart() {
+        if (self.timeCounter == null) {
+          return false;
+        }
+        count++;
+        self.countDownText(times - count + 1);
+        if (count > times) {
+          clearTimeout(self.timeCounter);
+          self.showTime = null;
+        } else {
+          self.timeCounter = setTimeout(countDownStart, interval);
+        }
+      }
+    },
+    sendMessage() {
+      axios({
+        method: "GET",
+        url: "http://47.103.198.84:8080/codes/sendVerificationCod",
+        params: { email: this.email },
+      }).then(
+        (res) => {
+        //   this.countDown(60);
+          alert(res.msg);
+        },
+        (err) => {
+          console.log("请求失败");
+          this.countDown(60);
+        }
+      );
+    },
+    register() {
+      // axios({
+      //     method: 'GET',
+      // })
+    },
   },
 };
 </script>
@@ -81,12 +118,14 @@ export default {
 .password,
 .login,
 .code,
-.send {
+.send,
+.count-down {
   position: absolute;
 }
 .username {
-    top: 70px;
-    left: 15%;
+  top: 70px;
+  left: 15%;
+  width: 70%;
 }
 .email {
   top: 170px;
@@ -99,8 +138,20 @@ export default {
   width: 70%;
 }
 .send {
-    top: 170px;
-    left: 70%
+  top: 170px;
+  left: 70%;
+}
+.count-down {
+  top: 170px;
+  left: 70%;
+  width: 40px;
+  height: 40px;
+  border: 1px solid;
+  border-radius: 50%;
+  background-color: #909399;
+  color: aliceblue;
+  text-align: center;
+  line-height: 38px;
 }
 .code {
   top: 220px;
@@ -120,6 +171,15 @@ export default {
   margin-left: 150px;
 }
 .login:hover {
-    color:#e0a6b8;
+  color: #e0a6b8;
+}
+.goLogin {
+    position: absolute;
+    font-size: 12px;
+    top: 340px;
+    right: 30px;
+}
+.router-link-active:hover {
+    color:#e0a6b8
 }
 </style>

@@ -10,6 +10,7 @@ const MvDetail = () => import('views/main/home/childhome/MvDetail')
 const Login = () => import('components/common/Login')
 const Register = () => import('components/common/Register')
 const Main =()=>import('views/main/Main.vue')
+const User=()=>import('components/common/User.vue')
 
 Vue.use(VueRouter)
 
@@ -42,6 +43,10 @@ const routes = [
                 path: 'mv',
                 component: MvDetail
             },
+            {
+                path: 'user',
+                component: User
+            }
         ]
     },
     {

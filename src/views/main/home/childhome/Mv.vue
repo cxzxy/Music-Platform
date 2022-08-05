@@ -74,9 +74,10 @@ li {
     list-style: none;
     height: 200px;
     width: 23%;
-    background-color: aqua;
+    background-color: #c6e2ff;
     cursor: pointer;
     border-radius: 20px;
+    text-align: center;
 }
 h2 {
     margin-bottom: 10px;

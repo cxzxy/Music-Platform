@@ -19,7 +19,9 @@
     <div class="login">
       <div @click="login">登录</div>
     </div>
-    <!-- <span>未有账号？点击注册</span> -->
+    <div class="goRegister">
+        <router-link to="/register" class="router-link-active ">未有账号？点击注册</router-link>
+    </div>
   </div>
 </template>
 
@@ -115,5 +117,14 @@ export default {
 }
 .login:hover {
     color:#e0a6b8;
+}
+.goRegister {
+    position: absolute;
+    font-size: 12px;
+    top: 340px;
+    right: 30px;
+}
+.router-link-active:hover {
+    color:#e0a6b8
 }
 </style>

@@ -67,6 +67,6 @@ li {
     border-radius: 5px;
 }
 li:hover {
-    background-color: #e09caa;
+    background-color: #c6e2ff;
 }
 </style>
