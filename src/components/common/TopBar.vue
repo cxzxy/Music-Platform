@@ -1,5 +1,9 @@
 <template>
   <div class="top-container">
+    <div class="logo">
+        <span class="el-icon-headset"></span>
+        <span class="music">Music</span>
+    </div>
     <div class="search">
       <el-col :span="22">
         <el-autocomplete
@@ -7,7 +11,7 @@
           v-model="search"
           placeholder="搜索"
           :trigger-on-focus="false"
-          suffix-icon="el-icon-search"
+          prefix-icon="el-icon-search"
           resize="vertical"
         ></el-autocomplete>
       </el-col>
@@ -28,7 +32,7 @@
                 >注册</el-dropdown-item
               >
             </div>
-            <div @click="toUser">
+            <div @click="toUserInfo">
               <el-dropdown-item icon="el-icon-edit">个人资料</el-dropdown-item>
             </div>
             <div>
@@ -46,7 +50,7 @@ export default {
   components: {},
   data() {
     return {
-        search: "",
+      search: "",
     };
   },
   methods: {
@@ -56,8 +60,8 @@ export default {
     toRegister() {
       this.$router.push("/register");
     },
-    toUser() {
-      this.$router.push("/user");
+    toUserInfo() {
+      this.$router.push("/main/userinfo");
     },
   },
 };
@@ -72,14 +76,30 @@ export default {
   width: 100%;
   background-color: #f9f9f9;
 }
+.logo {
+    position: absolute;
+    /* float: left; */
+    left: 50px;
+    top: 10px;
+    width: 100px;
+    height: 30px;
+    /* background-color: aqua; */
+    /* vertical-align: middle; */
+}
+.el-icon-headset {
+    font-size: 30px;
+}
+.music {
+    margin-left: 10px;
+}
 .user {
   position: absolute;
   right: 100px;
   top: 10px;
 }
 .search {
-    position: absolute;
-    right: 200px;
-    top: 12px;
+  position: absolute;
+  right: 200px;
+  top: 12px;
 }
 </style>

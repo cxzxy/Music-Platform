@@ -28,7 +28,7 @@
       <div class="count-down" v-else>{{ showTime }}</div>
     </div>
     <div class="login">
-      <div @click="register">注册</div>
+      <div @click="Register">注册</div>
     </div>
     <div class="goLogin">
         <router-link to="/login" class="router-link-active ">已有账号？点击登录</router-link>
@@ -38,6 +38,7 @@
 
 <script>
 import axios from "axios";
+import { sendEmailCode,verifyEmailCode,register } from "network/user";
 export default {
   name: "Register",
   components: {},
@@ -57,7 +58,7 @@ export default {
     countDownText(s) {
       this.showTime = `${s}s`;
     },
-    // 倒计时 60秒 不需要很精准
+    // 倒计时60秒
     countDown(times) {
       const self = this;
       // 时间间隔 1秒
@@ -79,26 +80,34 @@ export default {
       }
     },
     sendMessage() {
-      axios({
-        method: "GET",
-        url: "http://47.103.198.84:8080/codes/sendVerificationCod",
-        params: { email: this.email },
-      }).then(
-        (res) => {
-        //   this.countDown(60);
-          alert(res.msg);
-        },
-        (err) => {
-          console.log("请求失败");
+        sendEmailCode({ email: this.email }).then(
+        res => {
           this.countDown(60);
+        //   alert(res.msg);
+        },
+        err => {
+          console.log("请求失败");
+        //   this.countDown(60);
         }
       );
     },
-    register() {
-      // axios({
-      //     method: 'GET',
-      // })
-    },
+    // Register() {
+    //     verifyEmailCode({email: this.email}).then(
+    //         res=>{
+    //             if(res.code===200){
+
+    //             }
+    //         },
+    //         err=>{
+    //             console.log(err)
+    //         }
+    //     ),
+    //     register({userName: this.userName,password: this.password,eamil: this.email}).then(
+    //         res=>{
+
+    //         }
+    //     )
+    // },
   },
 };
 </script>

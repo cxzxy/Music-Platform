@@ -1,6 +1,5 @@
 <template>
   <div @click="itemClick" :class="{'active':isActive}">
-    <slot name="logo"></slot>
     <div><slot name="nav"></slot></div>
   </div>
 </template>
@@ -28,6 +27,6 @@ export default {
 </script>
 <style scoped>
 .active {
-    color: #e09c92;
+    color: #e07b60;
 }
 </style>

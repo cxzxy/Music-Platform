@@ -16,8 +16,8 @@
       </div>
       <div class="codeimg"><img :src="codeUrl" alt=""></div>
     </div>
-    <div class="login">
-      <div @click="login">登录</div>
+    <div class="login" @click="Login">
+      <div>登录</div>
     </div>
     <div class="goRegister">
         <router-link to="/register" class="router-link-active ">未有账号？点击注册</router-link>
@@ -26,7 +26,9 @@
 </template>
 
 <script>
+import router from '@/router';
 import axios from 'axios'
+import {login,getCode} from 'network/user.js'
 export default {
   name: "Login",
   components: {},
@@ -35,33 +37,63 @@ export default {
       userName: "",
       password: "",
       code:"",
-      codeUrl: ""
+      codeUrl: "",
+      randomCode: "",
     };
   },
   methods: {
-    login(){
-        axios({
-            method: 'POST',
-            url: 'http://47.103.198.84:8080/login',
-            data: {userName:this.userName,password:this.password,code:this.code}
-        }).then(
+    // Login(){
+    //     axios({
+    //         method: 'POST',
+    //         url: 'http://47.103.198.84:8080/login',
+    //         data: {userName:this.userName,password:this.password,code:this.code}
+    //     }).then(
+    //         res=>{
+    //             // if(res.data.code)
+    //             // const token=res.data.token
+    //             // localStorage.setItem('token',token)//存储token在浏览器中
+    //             console.log(res)
+    //         }
+    //     ).catch(
+    //         err=>{
+    //             console.log(err)
+    //         }
+    //     )
+    // }
+    Login(){
+        login({userName:this.userName,password:this.password,code:this.code}).then(
             res=>{
-                if(res.data.code)
-                // const token=res.data.token
-                // window.localStorage.setItem('token',token)//存储token在浏览器中
-                console.log(res)
-            },
-            err=>{
-                console.log("请求失败")
+                if(res.code===200){
+                    const token=res.data.token
+                    // localStorage.setItem('token',token)
+                    // this.$router.push('/main/home')
+                }else{
+                    alert("登录失败")
+                }
             }
         )
     }
   },
   created(){
-    axios.get('http://47.103.198.84:8080/codes/captcha', {responseType: 'blob'}).then(
+    this.randomCode=Math.random().toString(16).substring(3)
+    // axios({
+    //     method: 'GET',
+    //     url: 'http://47.103.198.84:8080/codes/captcha',
+    //     responseType: 'blob',
+    //     params: {codeId: this.randomCode},
+    // }).then(
+    //     res=>{
+    //         this.codeUrl=window.URL.createObjectURL(res.data)
+    //         // console.log(this.codeUrl)
+    //     },
+    //     err=>{
+
+    //     }
+    // )
+    getCode('blob',{codeId: this.randomCode}).then(
         res=>{
             this.codeUrl=window.URL.createObjectURL(res.data)
-        }
+        },
     )
   }
 };
@@ -101,7 +133,7 @@ export default {
 .codeimg {
     top: 200px;
     left: 55%;
-    border: none
+    border: 1px solid pink
 }
 .login {
   width: 80px;
