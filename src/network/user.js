@@ -32,7 +32,7 @@ export function sendEmailCode(params){
 export function verifyEmailCode(params){
     return request({
         method: 'GET',
-        url: '//codes/valid-code',
+        url: '/codes/valid-code',
         params,
     })
 }

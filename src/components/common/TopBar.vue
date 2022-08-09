@@ -24,19 +24,17 @@
             class="el-dropdown-link"
           ></el-avatar>
           <el-dropdown-menu slot="dropdown">
-            <div @click="toLogin">
-              <el-dropdown-item icon="el-icon-plus">登录</el-dropdown-item>
+            <div @click="toLogin" v-if="!$store.state.user">
+              <el-dropdown-item icon="el-icon-plus" >登录/注册</el-dropdown-item>
             </div>
-            <div @click="toRegister">
-              <el-dropdown-item icon="el-icon-circle-plus"
-                >注册</el-dropdown-item
-              >
-            </div>
-            <div @click="toUserInfo">
+            <!-- <div @click="toRegister">
+              <el-dropdown-item icon="el-icon-plus" v-if="!$store.state.user">注册</el-dropdown-item>
+            </div> -->
+            <div @click="toUserInfo" v-if="$store.state.user">
               <el-dropdown-item icon="el-icon-edit">个人资料</el-dropdown-item>
             </div>
-            <div>
-              <el-dropdown-item icon="el-icon-close">退出登录</el-dropdown-item>
+            <div v-if="$store.state.user" @click="logOff">
+              <el-dropdown-item icon="el-icon-close" >退出登录</el-dropdown-item>
             </div>
           </el-dropdown-menu>
         </el-dropdown>
@@ -57,12 +55,19 @@ export default {
     toLogin() {
       this.$router.push("/login");
     },
-    toRegister() {
-      this.$router.push("/register");
-    },
+    // toRegister() {
+    //   this.$router.push("/register");
+    // },
     toUserInfo() {
       this.$router.push("/main/userinfo");
     },
+    logOff(){
+        localStorage.removeItem('accessToken')
+        localStorage.removeItem('user')
+        this.$store.state.user=null
+        this.$router.push('/login')
+        console.log(111)
+    }
   },
 };
 </script>

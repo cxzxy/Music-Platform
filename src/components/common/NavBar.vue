@@ -6,7 +6,7 @@
             <nav-bar-item class="navname" path="/main/category">
                 <div slot="nav"><span class="el-icon-s-fold iconfont"></span><span class="text">歌曲分类</span></div>
             </nav-bar-item>
-            <nav-bar-item class="navname" path="/main/musiclist">
+            <nav-bar-item class="navname" path='/main/musiclist/listdetail'>
                 <div slot="nav"><span class="el-icon-user iconfont"></span><span class="text">我的歌单</span></div>
             </nav-bar-item>
     </div>

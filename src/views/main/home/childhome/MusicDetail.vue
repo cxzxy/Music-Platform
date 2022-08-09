@@ -4,6 +4,7 @@
     </div>
 </template>
 <script>
+
 export default {
    name: "MusicDetail",
    components: {
@@ -19,7 +20,7 @@ export default {
     }
    },
    methods:{
-   }
+   },
 }
 </script>
 <style scoped>

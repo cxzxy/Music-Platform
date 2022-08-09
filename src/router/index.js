@@ -20,6 +20,8 @@ const Login = () => import('components/common/Login')
 const Register = () => import('components/common/Register')
 const Main =()=>import('views/main/Main.vue')
 const UserInfo=()=>import('components/common/UserInfo.vue')
+const ChangeUserInfo=()=>import('components/common/ChangeUserInfo.vue')
+const ListDetail=()=>import('views/main/musiclist/childmusiclist/ListDetail.vue')
 
 Vue.use(VueRouter)
 
@@ -28,6 +30,10 @@ const routes = [
         path: '/',
         redirect: '/main/home'
     },
+    // {
+    //     path: '/main/musiclist',
+    //     redirect: 'main/musiclist/listdetail?id=36&title=test'
+    // },
     {
         path: '/main',
         component: Main,
@@ -43,6 +49,15 @@ const routes = [
             {
                 path: 'musiclist',
                 component: MusicList,
+                children:[
+                    {
+                        path: 'listdetail',
+                        component: ListDetail,
+                        meta: {
+                            requireAuth: true
+                        }
+                    }
+                ],
                 meta: {
                     requireAuth: true
                 }
@@ -61,6 +76,13 @@ const routes = [
                 meta: {
                     requireAuth: true
                 }
+            },
+            {
+                path: 'changeuserinfo',
+                component: ChangeUserInfo,
+                meta: {
+                    requireAuth: true
+                }
             }
         ]
     },
@@ -71,7 +93,11 @@ const routes = [
     {
         path: '/register',
         component: Register
-    }
+    },
+    // {
+    //     path: '/aaa',
+    //     component: aaa
+    // }
 ]
 
 const router = new VueRouter({
@@ -79,17 +105,19 @@ const router = new VueRouter({
     mode: 'history'
 })
 
-//导航守卫
-// router.beforeEach((to,from,next)=>{
-//     if(to.path=='/login')  {
-//         next()
-//     }else{
-//         if(to.meta.requireAuth && !localStorage.getItem('accessToken')){
-//             next({path: '/login'})
-//         }else{
-//             next()
-//         }
-//     }
-// })
+// 导航守卫
+router.beforeEach((to,from,next)=>{
+    if(to.path==('/login'||'/register'))  {
+        next()
+    }else{
+        if(to.meta.requireAuth && !localStorage.getItem('accessToken')){
+            console.log('拦截')
+            next({path: '/login'})
+        }else{
+            next()
+        }
+        // console.log(!localStorage.getItem('accessToken'))
+    }
+})
 
 export default router

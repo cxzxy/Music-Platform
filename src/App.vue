@@ -17,6 +17,10 @@ export default {
     login,
     Register,
   },
+  mounted(){
+    const user=localStorage.getItem('user')
+    this.$store.commit('login',user)
+  }
 };
 </script>
 
