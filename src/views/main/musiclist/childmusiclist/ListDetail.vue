@@ -2,7 +2,7 @@
   <div class="detail">
     <div class="list">
       <div class="img">
-        <img src="~assets/img/5.jpg" alt="" />
+        <img :src="require(`assets/img/${getListIndex+1}.jpg`)" alt="" />
         <div>
         <div>{{ getListTitle }}</div>
         <!-- <div>{{getNowTime()}}</div> -->
@@ -24,7 +24,7 @@
           <span class="one"
             >{{ index + 1 }}.<span
               class="el-icon-video-play play"
-              @click="toplay"
+              @click="toplay(item.id)"
             ></span
             ><span
               class="el-icon-delete delete"
@@ -61,32 +61,6 @@ export default {
         (Math.random() * 51 + 10).toString().slice(0, 2)
       );
     },
-    // addZero(s) {
-    //   return s < 10 ? "0" + s : s;
-    // },
-    // getNowTime() {
-    //   const data = new Data();
-    //   let year = date.getFullYear();
-    //   let month = date.getMonth() + 1;
-    //   let day = date.getDate();
-    //   let hour = date.getHours();
-    //   let minute = date.getMinutes();
-    //   let second = date.getSeconds();
-    //   let time =
-    //     "当前时间是：" +
-    //     year +
-    //     "-" +
-    //     addZero(month) +
-    //     "-" +
-    //     addZero(day) +
-    //     " " +
-    //     addZero(hour) +
-    //     ":" +
-    //     addZero(minute) +
-    //     ":" +
-    //     addZero(second);
-    //   return time;
-    // },
     todelete(songid) {
       deleteFromList({ songId: songid, listId: this.getListId }).then(
         (res) => {
@@ -95,7 +69,7 @@ export default {
           } else {
             this.musicList.splice(
               this.musicList.findIndex((e) => e.id === songid),
-              songid
+              1
             );
           }
         },
@@ -104,7 +78,9 @@ export default {
         }
       );
     },
-    toplay() {},
+    toplay(id) {
+        this.$router.push(`/main/music?id=${id}`)
+    },
   },
   computed: {
     getListId() {
@@ -113,6 +89,9 @@ export default {
     getListTitle() {
       return this.$route.query.title;
     },
+    getListIndex(){
+        return parseInt(this.$route.query.index)
+    }
   },
   watch: {
     //监视路由变化
@@ -132,6 +111,10 @@ export default {
       }
     );
   },
+//   updated(){
+//         this.$bus.$emit('getLen',this.musicList.length)
+//         console.log(this.musicList.length)
+//   }
 };
 </script>
 <style scoped>
@@ -200,6 +183,7 @@ img {
   height: 30px;
   /* border: 1px solid; */
   list-style: none;
+  overflow: hidden;
 }
 .music > li:nth-child(2n + 1) {
   background-color: #ededed;

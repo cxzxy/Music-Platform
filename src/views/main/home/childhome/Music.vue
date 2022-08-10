@@ -5,7 +5,7 @@
       <li v-for="(item, index) in songs" :key="index" @click="toMusic(item.id)">
         <div class="img"><img :src="item.pic" alt="" /></div>
         <span class="songname">{{ item.name }}</span>
-        <span class="personname">----{{ item.introduction }}</span>
+        <span class="personname">&nbsp;&nbsp;&nbsp;&nbsp;{{ item.introduction }}</span>
         <span
           class="el-icon-folder-add addtolist"
           @click="addToList($event, item.id)"
@@ -19,7 +19,7 @@
       <ul class="list" style="overflow-y: scroll">
         <li v-for="(item, index) in lists" :key="index" @click="add(item.id)">
           <img
-            src="http://rg16o2gzp.bkt.clouddn.com/picture/singer/ONE%20OK%20ROCK%20.png"
+            :src="require(`assets/img/${index+1}.jpg`)"
             alt=""
           />
           <div class="_list">
@@ -132,7 +132,7 @@ export default {
 }
 h2 {
   padding-top: 20px;
-  /* padding-left: 170px; */
+  padding-left: 170px;
 }
 .list li {
   /* background-color: #e07b6d; */
@@ -168,7 +168,8 @@ li:hover {
   color: #e07b6d;
 }
 .addtolist {
-  margin-left: 700px;
+    position: absolute;
+  right: 100px;
   font-size: 20px;
 }
 .list {

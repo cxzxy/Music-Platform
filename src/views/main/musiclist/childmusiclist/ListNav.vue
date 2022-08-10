@@ -10,21 +10,22 @@
       </h2>
     </div>
     <ul class="list">
-      <li v-for="(item, index) in lists" :key="index" @click="toListDetail(item.id,item.title)">
-        <img
-          src="~assets/img/5.jpg"
-          alt=""
-        />
+      <li
+        v-for="(item, index) in lists"
+        :key="index"
+        @click="toListDetail(item.id, item.title, index)"
+      >
+        <img :src="require(`assets/img/${index + 1}.jpg`)" alt="" />
         <div class="_list">
           <div class="title">{{ item.title }}</div>
           <div class="num">
             6首<span
               class="el-icon-edit iconfont1"
-              @click="editlist($event,item.id)"
+              @click="editlist($event, item.id)"
             ></span
             ><span
               class="el-icon-delete iconfont2"
-              @click="deletelist($event,item.id)"
+              @click="deletelist($event, item.id)"
             ></span>
           </div>
         </div>
@@ -79,11 +80,16 @@ export default {
       isEdit: false,
       isAdd: false,
       editedId: "",
+      len: 0
     };
   },
   methods: {
-    toListDetail(Id,Title){
-        this.$router.push(`/main/musiclist/listdetail?id=${Id}&title=${Title}`)
+    getwww(len){
+        this.len=len;
+        console.log(this.len)
+    },
+    toListDetail(Id,Title,index){
+        this.$router.push(`/main/musiclist/listdetail?id=${Id}&title=${Title}&index=${index}`)
     },
     addlist() {
       this.isAdd = true;
@@ -94,7 +100,7 @@ export default {
           //   console.log(res);
           this.lists.splice(
             this.lists.findIndex((e) => e.id === Id),
-            Id
+            1
           );
         },
         (err) => {
@@ -148,7 +154,6 @@ export default {
     },
   },
   computed:{
-    
   },
   created() {
     getMusicList().then(
@@ -161,9 +166,15 @@ export default {
       (err) => {
         console.log(err);
       }
-    );
+    )
   },
-};
+//   mounted(){
+//     this.$bus.$on('getLen',this.getwww)
+//   },
+//   beforeDestroy(){
+//     this.$bus.$on('getLen')
+//   }
+}
 </script>
 <style scoped>
 .add1 {
@@ -258,8 +269,6 @@ li > img {
   margin-left: 20px;
   cursor: pointer;
 }
-
-
 
 .header {
   text-align: center;

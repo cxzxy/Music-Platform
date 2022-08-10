@@ -5,11 +5,9 @@
             <li
                v-for="(item,index) in mvData" 
                :key="index"
-               @click="toMv(item.id)"
-               @mouseover="toTrue(item.id)"
-               @mouseout="toFalse(item.id)">
+               @click="toMv(item.id)">
                <img :src="item.picUrl" alt="">
-               <span class="el-icon-video-play play" v-show="isShow(item.id)"></span>
+               <span class="el-icon-video-play play"></span>
             </li>
         </ul>
     </div>
@@ -81,7 +79,7 @@ li {
     list-style: none;
     height: 150px;
     width: 23.5%;
-    background-color: pink;
+    /* background-color: pink; */
     cursor: pointer;
     border-radius: 20px;
     text-align: center;

@@ -31,8 +31,8 @@ const routes = [
         redirect: '/main/home'
     },
     // {
-    //     path: '/main/musiclist',
-    //     redirect: 'main/musiclist/listdetail?id=36&title=test'
+    //     path: '/main/musiclist/listdetail',
+    //     redirect: 'main/musiclist/listdetail?id=36&title=test&index=4'
     // },
     {
         path: '/main',
