@@ -1,7 +1,7 @@
 <template>
     <div>
         <ul class="musics">
-            <li v-for="(item,index) in list" :key="index" @click="toMusic(item.id)">
+            <li v-for="(item,index) in list" :key="index" @click="toMusic(item.id)" >
             <img :src="item.pic" alt="">
             <span>{{item.name}}</span>
             </li>
@@ -20,6 +20,7 @@ export default {
         list:[]
       }
    },
+   
    computed:{
     getId(){
         return this.$route.query.id

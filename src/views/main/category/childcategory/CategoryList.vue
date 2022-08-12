@@ -6,6 +6,7 @@
         :key="index"
         @click="getMusics(item.id)"
         :class="{ active: item.id==getId }"
+        v-clickDown="index"
       >
         {{ item.name }}
       </li>
@@ -28,6 +29,15 @@ export default {
       this.$router.push(`/main/category/categorydetail?id=${id}`);
     },
   },
+  directives:{
+    clickDown:{
+        inserted(el,binding,index){
+            if(binding.value===0){
+                el.click()
+            }
+        }
+    }
+   },
   computed: {
     getId(){
         const parameter=this.$route.fullPath.split('?')[1]

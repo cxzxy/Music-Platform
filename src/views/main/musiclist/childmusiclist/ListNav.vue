@@ -20,7 +20,8 @@
       <li
         v-for="(item, index) in lists.slice(1)"
         :key="index"
-        @click="toListDetail(item.id, item.title, index+1)"
+        @click="toListDetail(item.id, item.title, index + 1)"
+        v-clickDown="index"
       >
         <img :src="require(`assets/img/${index + 2}.jpg`)" alt="" />
         <div class="_list">
@@ -95,8 +96,8 @@ export default {
     return {
       lists: [
         {
-            title: ''
-        }
+          title: "",
+        },
       ],
       addedListName: "",
       changedListName: "",
@@ -105,9 +106,20 @@ export default {
       editedId: "",
     };
   },
+  directives:{
+    clickDown:{
+        inserted(el,binding,index){
+            if(binding.value===0){
+                el.click()
+            }
+        }
+    }
+   },
   methods: {
     toListDetail(id, title, index) {
-        this.$router.push(`/main/musiclist/listdetail?id=${id}&title=${title}&index=${index}`)
+      this.$router.push(
+        `/main/musiclist/listdetail?id=${id}&title=${title}&index=${index}`
+      );
     },
     addlist() {
       this.isAdd = true;
