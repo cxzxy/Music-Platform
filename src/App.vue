@@ -5,10 +5,9 @@
 </template>
 
 <script>
-// import LoginRegister from "components/common/LoginRegister.vue";
 import Main from "views/main/Main.vue";
-import login from "components/common/Login.vue";
-import Register from "components/common/Register.vue";
+import login from "components/Login.vue";
+import Register from "components/Register.vue";
 
 export default {
   name: "App",

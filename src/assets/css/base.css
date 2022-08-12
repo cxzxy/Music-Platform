@@ -56,3 +56,6 @@ li {
 .right {
   float: right;
 }
+::-webkit-scrollbar {
+    display: none;
+  }

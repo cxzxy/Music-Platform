@@ -5,7 +5,7 @@
   </div>
 </template>
 <script>
-import TopBar from "components/common/TopBar.vue";
+import TopBar from "components/TopBar.vue";
 import Index from "views/Index.vue";
 
 export default {

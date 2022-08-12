@@ -2,22 +2,39 @@
   <div class="xxx">
     <div class="userInfo">
       <div class="leftbox">
-        <el-avatar icon="el-icon-user-solid" class="avatar"></el-avatar>
+        <div class="avatar" v-if="avatar">
+          <img :src="avatar" />
+        </div>
+        <div v-else>
+        <el-avatar
+          icon="el-icon-user-solid"
+          class="el-dropdown-link avatar"
+        ></el-avatar>
+      </div>
         <div class="username">{{ userName }}</div>
-
         <button class="back" @click="goHome">回到主页</button>
       </div>
       <div class="rightbox">
         <h2>个人信息</h2>
         <div class="info">
-          <el-descriptions title=""  :column=1 class="list">
-            <el-descriptions-item label="邮箱" class="item">{{email}}</el-descriptions-item>
-            <el-descriptions-item label="性别" class="item">{{getSex()}}</el-descriptions-item>
-            <el-descriptions-item label="爱好" class="item">{{hobby}}</el-descriptions-item>
-            <el-descriptions-item label="ID" class="item">&nbsp;&nbsp;&nbsp;{{id}}</el-descriptions-item>
-            <el-descriptions-item label="年龄" class="item">{{age}}</el-descriptions-item>
-            </el-descriptions>
-            </div>
+          <el-descriptions title="" :column="1" class="list">
+            <el-descriptions-item label="邮箱" class="item">{{
+              email
+            }}</el-descriptions-item>
+            <el-descriptions-item label="性别" class="item">{{
+              getSex()
+            }}</el-descriptions-item>
+            <el-descriptions-item label="爱好" class="item">{{
+              hobby
+            }}</el-descriptions-item>
+            <el-descriptions-item label="ID" class="item"
+              >&nbsp;&nbsp;&nbsp;{{ id }}</el-descriptions-item
+            >
+            <el-descriptions-item label="年龄" class="item">{{
+              age
+            }}</el-descriptions-item>
+          </el-descriptions>
+        </div>
         <button class="change" @click="goChange">修改信息</button>
       </div>
     </div>
@@ -36,22 +53,22 @@ export default {
       age: 1,
       sex: 1,
       hobby: "唱跳rap打篮球",
-      avatar: "url",
+      avatar: "",
       id: 123456,
     };
   },
   methods: {
     goChange() {
-      this.$router.push("/main/changeuserinfo")
+      this.$router.push("/main/changeuserinfo");
     },
     getSex() {
-      if (this.sex == 1) return "男"
-      else if (this.sex == 0) return "女"
-      else return "保密"
+      if (this.sex == 1) return "男";
+      else if (this.sex == 0) return "女";
+      else return "保密";
     },
-    goHome(){
-        this.$router.push("/main/home")
-    }
+    goHome() {
+      this.$router.push("/main/home");
+    },
   },
   created() {
     getUserInfo().then(
@@ -63,7 +80,12 @@ export default {
           this.id = res.data.id;
           this.avatar = res.data.avatar;
           this.hobby = res.data.hobby;
-          this.age=res.data.age
+          this.age = res.data.age;
+          const avatar=localStorage.getItem("avatar")
+          if(!avatar){
+            localStorage.setItem("avatar", res.data.avatar);
+          }
+          
         }
         console.log(res);
       },
@@ -75,14 +97,28 @@ export default {
 };
 </script>
 <style scoped>
+.el-upload:hover {
+  border-color: #409eff;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+  text-align: center;
+  border-radius: 50%;
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
 .userInfo {
   position: relative;
   display: flex;
-  margin-top: 170px;
+  margin-top: 80px;
   margin-left: 100px;
   width: 80%;
   height: 470px;
-  /* border: 1px solid pink; */
   border-radius: 20px;
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.75);
 }
@@ -101,6 +137,7 @@ export default {
   font-size: 70px;
   line-height: 100px;
   cursor: pointer;
+  border: 1px solid;
 }
 .leftbox .username {
   padding-top: 140px;
@@ -126,7 +163,7 @@ export default {
   color: aliceblue;
 }
 .back {
-    position: absolute;
+  position: absolute;
   bottom: 20px;
   width: 230px;
   height: 50px;
@@ -151,8 +188,8 @@ h2 {
   height: 80%;
 }
 .list {
-    display: flex;
-      flex-direction: column;
+  display: flex;
+  flex-direction: column;
   justify-content: space-between;
   padding-top: 60px;
   height: 70%;

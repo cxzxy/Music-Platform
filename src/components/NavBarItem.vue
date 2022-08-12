@@ -1,5 +1,5 @@
 <template>
-  <div @click="itemClick" :class="{'active':isActive}">
+  <div @click="itemClick" :class="{ active: isActive }">
     <div><slot name="nav"></slot></div>
   </div>
 </template>
@@ -13,20 +13,20 @@ export default {
   data() {
     return {};
   },
-  computed:{
-    isActive(){
-        return this.$route.path.indexOf(this.path)!==-1
-    }
+  computed: {
+    isActive() {
+      return this.$route.path.indexOf(this.path) !== -1;
+    },
   },
   methods: {
     itemClick() {
-      this.$router.replace(this.path).catch(() => {});
+      this.$router.replace(this.path);
     },
   },
 };
 </script>
 <style scoped>
 .active {
-    color: #e07b60;
+  color: #e07b60;
 }
 </style>

@@ -61,3 +61,12 @@ export function deleteFromList(data){
         data,
     })
 }
+
+// 获取搜索结果
+export function getSearchResult(params){
+    return request({
+        method: 'GET',
+        url: '/songs/find',
+        params
+    })
+}

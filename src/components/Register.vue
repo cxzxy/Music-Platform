@@ -12,7 +12,6 @@
                 placeholder="请输入用户名"
                 v-model="userName"
               />
-              <!-- <span class="errTips" v-if="existed">* 用户名已经存在！ *</span> -->
               <input
                 type="password"
                 placeholder="请输入密码"
@@ -30,6 +29,7 @@
                 placeholder="请输入验证码"
                 v-model="code"
                 style="width: 30%; margin-right: 127px"
+                @keyup.enter="test"
               />
             </div>
             <button class="bbutton" @click="Register">注册</button>
@@ -60,7 +60,6 @@ export default {
       userName: "",
       timeCounter: null, //计时器
       showTime: null, //剩余时间
-      //   state: ""
     };
   },
   methods: {
@@ -93,51 +92,51 @@ export default {
       sendEmailCode({ email: this.email }).then(
         (res) => {
           this.countDown(60);
-          //   alert(res.msg);
-          console.log(res);
         },
         (err) => {
           console.log("请求失败");
-          //   this.countDown(60);
+        }
+      );
+    },
+    test() {
+      verifyEmailCode({
+        verificationCode: this.code,
+      }).then(
+        (res) => {
+          if (res.code === 200) {
+            this.Register();
+          } else {
+            this.$message("验证码错误");
+          }
+        },
+        (err) => {
+          console.log(err);
         }
       );
     },
     Register() {
-    //   verifyEmailCode({
-    //     code: this.code,
-    //   }).then(
-    //     res=>{
-    //         console.log(res)
-    //     },
-    //     err=>{
-    //         console.log(err)
-    //     }
-    //   ),
-        register({
-          userName: this.userName,
-          password: this.password,
-          email: this.email,
-          code: this.code
-        }).then(
-          (res) => {
-              if (res.code === 200) {
-                const token = res.data.token;
-                console.log(token);
-                localStorage.setItem("accessToken", token);
-                localStorage.setItem("user", this.userName);
-                this.$store.commit("login", this.userName);
-                // console.log(this.$store.state.user)
-                alert("注册成功");
-                this.$router.push("/main/home");
-              } else {
-                alert(res.msg);
-              }
-            // console.log(res);
-          },
-          (err) => {
-            console.log(err);
+      register({
+        userName: this.userName,
+        password: this.password,
+        email: this.email,
+      }).then(
+        (res) => {
+          if (res.code === 200) {
+            const token = res.data.token;
+            console.log(token);
+            localStorage.setItem("accessToken", token);
+            localStorage.setItem("user", this.userName);
+            this.$store.commit("login", this.userName);
+            this.$message("注册成功");
+            this.$router.push("/main/home");
+          } else {
+            this.$message(res.msg);
           }
-        );
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
     },
     goLogin() {
       this.$router.push("/login");
@@ -153,7 +152,6 @@ export default {
   width: 100vw;
   height: 100vh;
   box-sizing: border-box;
-  /* background-color: aqua; */
 }
 .iconfont {
   position: absolute;
@@ -173,7 +171,6 @@ export default {
   transform: translate(-50%, -50%);
   background-color: #fff;
   border-radius: 20px;
-  /* box-shadow: 0 0 3px #f0f0f0, 0 0 6px #f0f0f0; */
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.75);
 }
 .big-box {
@@ -184,7 +181,6 @@ export default {
   left: 30%;
   transform: translateX(0%);
   transition: all 1s;
-  /* background-color: #1e2229; */
 }
 .big-contain {
   width: 100%;
@@ -201,7 +197,6 @@ export default {
   font-size: 24px;
   font-weight: 600;
   color: rgb(57, 167, 176);
-  /* padding-top: 10px;; */
 }
 .bform {
   margin-top: 30px;

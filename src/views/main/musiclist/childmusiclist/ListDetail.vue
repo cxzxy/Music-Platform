@@ -2,10 +2,9 @@
   <div class="detail">
     <div class="list">
       <div class="img">
-        <img :src="require(`assets/img/${getListIndex+1}.jpg`)" alt="" />
+        <img :src="require(`assets/img/`+getListIndex+`.jpg`)" alt="" />
         <div>
         <div>{{ getListTitle }}</div>
-        <!-- <div>{{getNowTime()}}</div> -->
         </div>
       </div>
       <h2></h2>
@@ -19,8 +18,8 @@
         <span class="four">歌手</span>
         <span class="five">专辑</span>
       </div>
-      <ul class="music">
-        <li v-for="(item, index) in musicList" :key="index">
+      <ul class="music" v-if="musicList.length">
+        <li v-for="(item, index) in musicList" :key="index" >
           <span class="one"
             >{{ index + 1 }}.<span
               class="el-icon-video-play play"
@@ -37,6 +36,7 @@
           <span class="five">{{ item.name }}</span>
         </li>
       </ul>
+      <h2 v-else>{{prompt}}</h2>
     </div>
   </div>
 </template>
@@ -50,8 +50,13 @@ export default {
     return {
       listDetail: {},
       musicList: [],
+      prompt: ""
     };
   },
+//     watch: {
+//     //监视路由变化
+//     "$route.query.id": "getMusicsInList"
+//   },
   methods: {
     getTime() {
       return (
@@ -81,6 +86,26 @@ export default {
     toplay(id) {
         this.$router.push(`/main/music?id=${id}`)
     },
+    getMusicsInList(){
+        getMusicsInList({ ListId: this.getListId }).then(
+      (res) => {
+        console.log(res)
+        if (res.code === 200) {
+          this.musicList = res.data;
+          if(!res.data){
+            this.prompt=res.msg
+          }
+        }
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+    },
+    update(){
+        this.getListId=this.$router.query.id
+        this.getMusicsInList()
+    }
   },
   computed: {
     getListId() {
@@ -90,19 +115,15 @@ export default {
       return this.$route.query.title;
     },
     getListIndex(){
-        return parseInt(this.$route.query.index)
+        return parseInt(parseInt(this.$route.query.index)+1)
     }
   },
-  watch: {
-    //监视路由变化
-    "$route.query.monthPlanId": "getMusicsInList",
-  },
+
   created() {
     getMusicsInList({ ListId: this.getListId }).then(
       (res) => {
-        // console.log(res);
+        console.log(res)
         if (res.code === 200) {
-          // console.log(res.data)
           this.musicList = res.data;
         }
       },
@@ -123,7 +144,6 @@ export default {
 }
 img {
   width: 200px;
-  /* height: 50px; */
   margin-left: 50px;
   margin-right: 50px;
 }
@@ -133,14 +153,12 @@ img {
   margin-top: 10px;
 }
 .musics h2 {
-  /* padding-bottom: 10px;; */
   margin-bottom: 10px;
   margin-left: 10px;
 }
 .title {
   width: 100%;
   height: 30px;
-  /* border: 1px solid; */
   border-top: 1px #ededed solid;
 }
 .play {
@@ -164,7 +182,6 @@ img {
 .three {
   float: left;
   display: block;
-  /* border-right: 1px solid; */
   height: 30px;
   line-height: 30px;
   padding-left: 5px;
@@ -173,15 +190,9 @@ img {
 .five {
   font-size: 14px;
 }
-.two,
-.four,
-.five {
-  /* font-weight: 550; */
-}
 .music > li {
   width: 100%;
   height: 30px;
-  /* border: 1px solid; */
   list-style: none;
   overflow: hidden;
 }
@@ -212,6 +223,5 @@ img {
 }
 .list {
   height: 300px;
-  /* border-bottom: 1px solid; */
 }
 </style>

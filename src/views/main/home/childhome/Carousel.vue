@@ -8,7 +8,8 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import { getBanners } from "network/home";
+
 export default {
   name: "Carousel",
   components: {},
@@ -46,26 +47,26 @@ export default {
         {
           imageUrl:
             "http://p1.music.126.net/bl8c3FMCISamXTiBnewdsA==/109951167757748304.jpg",
-        }
+        },
       ],
     };
   },
   methods: {},
-  //   created() {
-  //     axios({
-  //       url: "https://autumnfish.cn/banner",
-  //       method: "get",
-  //     }).then((res) => {
-  //       // console.log(res)
-  //       this.banners = res.data.banners.slice(0, 4);
-  //     });
-  //   },
+  created() {
+    getBanners().then(
+      (res) => {
+        this.Banners = res.data;
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  },
 };
 </script>
 <style scoped>
 img {
   width: 100%;
-  /* height: 200px; */
   height: 100%;
 }
 .el-carousel__item h3 {
@@ -75,11 +76,9 @@ img {
   line-height: 200px;
   margin: 0;
 }
-
 .el-carousel__item:nth-child(2n) {
   background-color: #99a9bf;
 }
-
 .el-carousel__item:nth-child(2n + 1) {
   background-color: #d3dce6;
 }

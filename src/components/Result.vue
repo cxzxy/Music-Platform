@@ -1,19 +1,33 @@
 <template>
-  <div>
-    <h2 class="h2">推荐歌曲</h2>
-    <ul class="ul1">
-      <li v-for="(item, index) in songs" :key="index" @click="toMusic(item.id)">
-        <div class="img"><img :src="item.pic" alt="" /></div>
-        <span class="songname">{{ item.name }}</span>
-        <span class="personname"
-          >&nbsp;&nbsp;&nbsp;&nbsp;{{ item.introduction }}</span
-        >
-        <span
-          class="el-icon-folder-add addtolist"
-          @click="addToList($event, item.id)"
-        ></span>
-      </li>
-    </ul>
+  <div class="xxx">
+    <div class="head">
+      <h2>{{ getSearchName }}</h2>
+      <span>一共找到{{ searchResult.length }}条结果</span>
+    </div>
+    <h2>歌曲列表</h2>
+    <div>
+      <ul>
+        <li class="title">
+          <span class="zero"></span>
+          <span class="one">歌曲名</span>
+          <span class="two">歌手</span>
+          <span class="three">专辑</span>
+          <span class="four">歌曲时长</span>
+        </li>
+        <ul class="list_">
+          <li v-for="(item, index) in searchResult" :key="index">
+            <span class="zero">&nbsp;&nbsp;&nbsp;{{ index }}
+            <span class="el-icon-video-play play" @click="toplay(item.id)"></span>
+            <span class="el-icon-folder-add add" @click="addToList($event, item.id)"></span>
+            </span>
+            <span class="one">{{ item.name }}</span>
+            <span class="two">{{ item.introduction }}</span>
+            <span class="three">{{ item.name }}</span>
+            <span class="four">{{ getTime() }}</span>
+          </li>
+        </ul>
+      </ul>
+    </div>
     <div class="curtain" v-show="isAdd">
       <div class="_addtolist">
         <h2>
@@ -23,7 +37,7 @@
           <li v-for="(item, index) in lists" :key="index" @click="add(item.id)">
             <img :src="require(`assets/img/${index + 1}.jpg`)" alt="" />
             <div class="_list">
-              <div class="title">{{ item.title }}</div>
+              <div class="_title">{{ item.title }}</div>
               <div class="num">6首</div>
             </div>
           </li>
@@ -33,23 +47,28 @@
   </div>
 </template>
 <script>
-import { getRecommendMusic } from "network/home";
-import { getMusicList, addToList } from "network/musiclist";
-
+import { getSearchResult, getMusicList,addToList} from "network/musiclist";
 export default {
-  name: "Music",
+  name: "Result",
   components: {},
   data() {
     return {
-      songs: [],
-      lists: [],
+      searchResult: [],
       isAdd: false,
-      songId: "",
+      lists: []
     };
   },
   methods: {
-    toMusic(id) {
-      this.$router.push(`/main/music?id=${id}`);
+    getTime() {
+      return (
+        "0" +
+        (Math.random() * 2 + 2).toString().slice(0, 1) +
+        ":" +
+        (Math.random() * 51 + 10).toString().slice(0, 2)
+      );
+    },
+    toplay(id){
+        this.$router.push(`/main/music?id=${id}`)
     },
     addToList(event, id) {
       this.isAdd = true;
@@ -92,12 +111,17 @@ export default {
       this.$message("添加成功")
     },
   },
+  computed: {
+    getSearchName() {
+      return this.$route.query.SongName;
+    },
+  },
   created() {
-    getRecommendMusic().then(
+    getSearchResult({ SongName: this.getSearchName }).then(
       (res) => {
         console.log(res);
         if (res.code === 200) {
-          this.songs = res.data;
+          this.searchResult = res.data;
         }
       },
       (err) => {
@@ -118,13 +142,55 @@ export default {
 };
 </script>
 <style scoped>
-.close {
-  position: absolute;
-  margin-left: 110px;
-  cursor: pointer;
+.xxx {
+  width: 100%;
 }
-.close:hover {
-  color: #e07b60;
+.play,.add {
+    font-size: 20px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.play:hover,.add:hover {
+    color: #75b9ff;
+}
+.title {
+  border-top: 1px solid #e4e7ed;
+  margin-top: 10px;
+  height: 30px;
+}
+li {
+  height: 50px;
+  line-height: 40px;
+  width: 100%;
+}
+.list_ {
+  margin-top: 10px;
+}
+.list_ > li:nth-child(2n + 1) {
+  background-color: #fafafa;
+}
+.zero,
+.one,
+.two,
+.three,
+.four {
+  display: inline-block;
+}
+.zero {
+  width: 10%;
+}
+.one {
+  width: 28%;
+}
+.two {
+  width: 28%;
+  /* overflow: hidden; */
+}
+.three {
+  width: 24%;
+}
+.four {
+  width: 10%;
 }
 .curtain {
   position: absolute;
@@ -160,55 +226,33 @@ export default {
 .list li:hover {
   background-color: #e6e6e6;
 }
-.ul1 li {
-  position: relative;
-  margin-top: 10px;
-  list-style: none;
-  cursor: pointer;
-  height: 50px;
-  line-height: 50px;
-  border-radius: 5px;
-}
-img {
-  float: left;
-  height: 50px;
-  width: 50px;
-  border-radius: 5px;
-}
-.songname {
-  padding-left: 10px;
-  font-weight: 600;
-}
-li:hover {
-  color: #e07b6d;
-}
-.addtolist {
+.close {
   position: absolute;
-  right: 10px;
-  font-size: 20px;
+  margin-left: 110px;
+  cursor: pointer;
 }
-.list {
-  margin-top: 20px;
-  height: 70%;
+.close:hover {
+  color: #e07b60;
 }
 ._list {
   height: 100%;
   float: left;
   margin-left: 10px;
 }
-.title {
+._title {
   height: 50%;
   font-size: 14px;
   padding-top: 5px;
+  margin-top: -13px;
 }
 .num {
   font-size: 14px;
   padding-top: 5px;
 }
-._list > li > img {
-  height: 80%;
+img {
   float: left;
-  margin-top: 5px;
-  margin-left: 5px;
+  height: 50px;
+  width: 50px;
+  border-radius: 5px;
 }
 </style>

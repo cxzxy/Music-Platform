@@ -10,12 +10,19 @@
       </h2>
     </div>
     <ul class="list">
+      <li @click="toListDetail(lists[0].id, lists[0].title, 0)">
+        <img src="~assets/img/1.jpg" alt="" />
+        <div class="_list">
+          <div class="title">{{ lists[0].title }}</div>
+          <div class="num">6首</div>
+        </div>
+      </li>
       <li
-        v-for="(item, index) in lists"
+        v-for="(item, index) in lists.slice(1)"
         :key="index"
-        @click="toListDetail(item.id, item.title, index)"
+        @click="toListDetail(item.id, item.title, index+1)"
       >
-        <img :src="require(`assets/img/${index + 1}.jpg`)" alt="" />
+        <img :src="require(`assets/img/${index + 2}.jpg`)" alt="" />
         <div class="_list">
           <div class="title">{{ item.title }}</div>
           <div class="num">
@@ -31,30 +38,42 @@
         </div>
       </li>
     </ul>
-    <div class="add1" v-show="isAdd">
-      <div style="position: relative">
-        <div class="header">新建歌单</div>
-        <div class="container">
-          <div class="name">
-            歌单名:<input type="text" v-model="addedListName" />
-          </div>
-          <div class="button">
-            <div @click="add" class="add2">新建</div>
-            <div @click="cancelAdd" class="cancel">取消</div>
+    <div class="curtain" v-show="isAdd">
+      <div class="add1">
+        <div style="position: relative">
+          <div class="header">新建歌单</div>
+          <div class="container">
+            <div class="name">
+              歌单名:<input
+                type="text"
+                v-model="addedListName"
+                @keyup.enter="add"
+              />
+            </div>
+            <div class="button">
+              <div @click="add" class="add2">新建</div>
+              <div @click="cancelAdd" class="cancel">取消</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="edit" v-show="isEdit">
-      <div style="position: relative">
-        <div class="header">修改歌单信息</div>
-        <div class="container">
-          <div class="name">
-            歌单名:<input type="text" v-model="changedListName" />
-          </div>
-          <div class="button">
-            <div @click="save" class="save">保存</div>
-            <div @click="cancelSave" class="cancel">取消</div>
+    <div class="curtain" v-show="isEdit">
+      <div class="edit">
+        <div style="position: relative">
+          <div class="header">修改歌单信息</div>
+          <div class="container">
+            <div class="name">
+              歌单名:<input
+                type="text"
+                v-model="changedListName"
+                @keyup.enter="save"
+              />
+            </div>
+            <div class="button">
+              <div @click="save" class="save">保存</div>
+              <div @click="cancelSave" class="cancel">取消</div>
+            </div>
           </div>
         </div>
       </div>
@@ -74,30 +93,34 @@ export default {
   components: {},
   data() {
     return {
-      lists: [],
+      lists: [
+        {
+            title: ''
+        }
+      ],
       addedListName: "",
       changedListName: "",
       isEdit: false,
       isAdd: false,
       editedId: "",
-      len: 0
     };
   },
   methods: {
-    getwww(len){
-        this.len=len;
-        console.log(this.len)
-    },
-    toListDetail(Id,Title,index){
-        this.$router.push(`/main/musiclist/listdetail?id=${Id}&title=${Title}&index=${index}`)
+    toListDetail(id, title, index) {
+        this.$router.push(`/main/musiclist/listdetail?id=${id}&title=${title}&index=${index}`)
     },
     addlist() {
       this.isAdd = true;
+
+      let m = function (e) {
+        e.preventDefault();
+      };
+      document.body.style.overflow = "hidden";
+      document.addEventListener("touchmove", m, { passive: false });
     },
-    deletelist(event,Id) {
+    deletelist(event, Id) {
       deleteMusicList({ id: Id }).then(
         (res) => {
-          //   console.log(res);
           this.lists.splice(
             this.lists.findIndex((e) => e.id === Id),
             1
@@ -107,15 +130,27 @@ export default {
           console.log(err);
         }
       );
-      event.stopPropagation(); 
+      event.stopPropagation();
     },
-    editlist(event,id) {
+    editlist(event, id) {
       this.isEdit = true;
+      let m = function (e) {
+        e.preventDefault();
+      };
+      document.body.style.overflow = "hidden";
+      document.addEventListener("touchmove", m, { passive: false });
+
       this.editedId = id;
-      event.stopPropagation(); 
+      event.stopPropagation();
     },
     add() {
-      this.isAdd = !this.isAdd;
+      this.isAdd = false;
+      let m = function (e) {
+        e.preventDefault();
+      };
+      document.body.style.overflow = ""; //出现滚动条
+      document.removeEventListener("touchmove", m, { passive: true });
+
       createMusicList({ title: this.addedListName }).then(
         (res) => {
           this.lists.push(res.data);
@@ -128,6 +163,12 @@ export default {
     },
     save() {
       this.isEdit = false;
+      let m = function (e) {
+        e.preventDefault();
+      };
+      document.body.style.overflow = ""; //出现滚动条
+      document.removeEventListener("touchmove", m, { passive: true });
+
       editMusicList({
         id: this.editedId,
         title: this.changedListName,
@@ -136,9 +177,9 @@ export default {
         style: "",
       }).then(
         (res) => {
-          if(res.code===200){
-            const index=this.lists.findIndex((e) => e.id === this.editedId)
-            this.lists[index].title=this.changedListName
+          if (res.code === 200) {
+            const index = this.lists.findIndex((e) => e.id === this.editedId);
+            this.lists[index].title = this.changedListName;
           }
         },
         (err) => {
@@ -148,80 +189,93 @@ export default {
     },
     cancelAdd() {
       this.isAdd = false;
+      let m = function (e) {
+        e.preventDefault();
+      };
+      document.body.style.overflow = ""; //出现滚动条
+      document.removeEventListener("touchmove", m, { passive: true });
     },
     cancelSave() {
       this.isEdit = false;
+      let m = function (e) {
+        e.preventDefault();
+      };
+      document.body.style.overflow = ""; //出现滚动条
+      document.removeEventListener("touchmove", m, { passive: true });
     },
   },
-  computed:{
-  },
+  computed: {},
   created() {
     getMusicList().then(
       (res) => {
         if (res.code === 200) {
           this.lists = res.data;
         }
-        // console.log(res);
       },
       (err) => {
         console.log(err);
       }
-    )
+    );
   },
-//   mounted(){
-//     this.$bus.$on('getLen',this.getwww)
-//   },
-//   beforeDestroy(){
-//     this.$bus.$on('getLen')
-//   }
-}
+  //   mounted(){
+  //     this.$bus.$on('getLen',this.getwww)
+  //   },
+  //   beforeDestroy(){
+  //     this.$bus.$on('getLen')
+  //   }
+};
 </script>
 <style scoped>
-.add1 {
-  /* display: none; */
+.curtain {
   position: absolute;
-  /* border: 1px solid pink; */
+  width: 1000vw;
+  height: 1000vh;
+  margin-left: -310px;
+  margin-top: -415px;
+  background-color: rgba(34, 34, 34, 0.5);
+  z-index: 999;
+}
+.add1 {
+  position: fixed;
   height: 200px;
   width: 400px;
-  left: 300px;
+  left: 650px;
+  top: 250px;
   border-radius: 20px;
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.75);
-  background-color: #ffffff;
+  background-color: #fff;
+  z-index: 1000;
 }
 .edit {
-  /* display: none; */
-  position: absolute;
-  /* border: 1px solid pink; */
+  position: fixed;
   height: 200px;
   width: 400px;
-  left: 300px;
+  left: 650px;
+  top: 250px;
   border-radius: 20px;
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.75);
   background-color: #ffffff;
+  z-index: 1000;
 }
 li {
   list-style: none;
   height: 50px;
-  /* line-height: 50px; */
+  width: 200px;
 }
 li:hover {
   background-color: #ededed;
 }
 .head {
-  /* text-align: center; */
-  /* margin-top: 10px; */
   padding-top: 20px;
-  /* margin-left: 10px; */
 }
 .list-nav {
   width: 30%;
   height: 100%;
-  /* border: 1px solid; */
   background-color: #f9f9f9;
 }
 .list {
   margin-top: 20px;
-  /* text-align: center; */
+  width: 250px;
 }
 ._list {
   height: 100%;
@@ -230,7 +284,6 @@ li:hover {
 }
 .title {
   height: 50%;
-  /* background-color: aqua; */
   font-size: 14px;
   padding-top: 5px;
 }
@@ -247,7 +300,6 @@ li > img {
 .iconfont3 {
   cursor: pointer;
   margin-left: 40px;
-  /* padding-top: 20px; */
 }
 .iconfont3:hover {
   color: #75b9ff;
@@ -276,11 +328,6 @@ li > img {
   font-weight: 600;
   font-size: 20px;
 }
-.container {
-  /* display: flex;
-    flex-direction: column;
-    justify-content: space-around; */
-}
 .name {
   position: absolute;
   width: 70%;
@@ -288,7 +335,6 @@ li > img {
   line-height: 50px;
   left: 40px;
   top: 40px;
-  /* background-color: aqua; */
 }
 input {
   height: 40px;
@@ -297,7 +343,6 @@ input {
   margin-left: 10px;
   border-radius: 20px;
   border-color: #8dc4fd;
-  /* border: none; */
 }
 .add2,
 .cancel {
@@ -305,7 +350,6 @@ input {
   cursor: pointer;
   width: 70px;
   height: 40px;
-  /* border: 1px solid pink; */
   background-color: #f0f0f0;
   line-height: 40px;
   text-align: center;
@@ -332,11 +376,6 @@ input {
   font-weight: 600;
   font-size: 20px;
 }
-.container {
-  /* display: flex;
-    flex-direction: column;
-    justify-content: space-around; */
-}
 .name {
   position: absolute;
   width: 70%;
@@ -344,7 +383,6 @@ input {
   line-height: 50px;
   left: 40px;
   top: 40px;
-  /* background-color: aqua; */
 }
 input {
   height: 40px;
@@ -353,7 +391,6 @@ input {
   margin-left: 10px;
   border-radius: 20px;
   border-color: #8dc4fd;
-  /* border: none; */
 }
 .save,
 .cancel {
@@ -361,7 +398,6 @@ input {
   cursor: pointer;
   width: 70px;
   height: 40px;
-  /* border: 1px solid pink; */
   background-color: #f0f0f0;
   line-height: 40px;
   text-align: center;
@@ -381,5 +417,8 @@ input {
 }
 .cancel {
   right: 100px;
+}
+.head {
+  width: 250px;
 }
 </style>

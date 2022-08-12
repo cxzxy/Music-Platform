@@ -2,26 +2,12 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 const originalPush = VueRouter.prototype.push
-VueRouter.prototype.push = function push (location, onResolve, onReject) {
-  if (onResolve || onReject){
-    return originalPush.call(this, location, onResolve, onReject)
-  }
-  return originalPush.call(this, location).catch(err => err)
+VueRouter.prototype.push = function push(location, onResolve, onReject) {
+    if (onResolve || onReject) {
+        return originalPush.call(this, location, onResolve, onReject)
+    }
+    return originalPush.call(this, location).catch(err => err)
 }
-
-
-//懒加载
-const Home = () => import('views/main/home/Home')
-const Category = () => import('views/main/category/Category')
-const MusicList = () => import('views/main/musiclist/MusicList')
-const MusicDetail = () => import('views/main/home/childhome/MusicDetail')
-const MvDetail = () => import('views/main/home/childhome/MvDetail')
-const Login = () => import('components/common/Login')
-const Register = () => import('components/common/Register')
-const Main =()=>import('views/main/Main.vue')
-const UserInfo=()=>import('components/common/UserInfo.vue')
-const ChangeUserInfo=()=>import('components/common/ChangeUserInfo.vue')
-const ListDetail=()=>import('views/main/musiclist/childmusiclist/ListDetail.vue')
 
 Vue.use(VueRouter)
 
@@ -30,29 +16,35 @@ const routes = [
         path: '/',
         redirect: '/main/home'
     },
-    // {
-    //     path: '/main/musiclist/listdetail',
-    //     redirect: 'main/musiclist/listdetail?id=36&title=test&index=4'
-    // },
     {
         path: '/main',
-        component: Main,
+        redirect: '/main/home'
+    },
+    {
+        path: '/main',
+        component: () => import('views/main/Main.vue'),
         children: [
             {
                 path: 'home',
-                component: Home,
+                component: () => import('views/main/home/Home.vue'),
             },
             {
                 path: 'category',
-                component: Category
+                component: () => import('views/main/category/Category.vue'),
+                children: [
+                    {
+                        path: 'categorydetail',
+                        component: ()=> import('views/main/category/childcategory/CategoryDetail.vue')
+                    }
+                ]
             },
             {
                 path: 'musiclist',
-                component: MusicList,
-                children:[
+                component: () => import('views/main/musiclist/MusicList.vue'),
+                children: [
                     {
                         path: 'listdetail',
-                        component: ListDetail,
+                        component: () => import('views/main/musiclist/childmusiclist/ListDetail.vue'),
                         meta: {
                             requireAuth: true
                         }
@@ -64,40 +56,40 @@ const routes = [
             },
             {
                 path: 'music',
-                component: MusicDetail
+                component: () => import('views/main/home/childhome/MusicDetail.vue')
             },
             {
                 path: 'mv',
-                component: MvDetail
+                component: () => import('views/main/home/childhome/MvDetail.vue')
             },
             {
                 path: 'userinfo',
-                component: UserInfo,
+                component: () => import('components/UserInfo.vue'),
                 meta: {
                     requireAuth: true
                 }
             },
             {
                 path: 'changeuserinfo',
-                component: ChangeUserInfo,
+                component: () => import('components/ChangeUserInfo.vue'),
                 meta: {
                     requireAuth: true
                 }
+            },
+            {
+                path: 'result',
+                component: () => import('components/Result.vue')
             }
         ]
     },
     {
         path: '/login',
-        component: Login
+        component: () => import('components/Login.vue')
     },
     {
         path: '/register',
-        component: Register
+        component: () => import('components/Register.vue')
     },
-    // {
-    //     path: '/aaa',
-    //     component: aaa
-    // }
 ]
 
 const router = new VueRouter({
@@ -106,17 +98,16 @@ const router = new VueRouter({
 })
 
 // 导航守卫
-router.beforeEach((to,from,next)=>{
-    if(to.path==('/login'||'/register'))  {
+router.beforeEach((to, from, next) => {
+    if (to.path == ('/login' || '/register')) {
         next()
-    }else{
-        if(to.meta.requireAuth && !localStorage.getItem('accessToken')){
+    } else {
+        if (to.meta.requireAuth && !localStorage.getItem('accessToken')) {
             console.log('拦截')
-            next({path: '/login'})
-        }else{
+            next({ path: '/login' })
+        } else {
             next()
         }
-        // console.log(!localStorage.getItem('accessToken'))
     }
 })
 

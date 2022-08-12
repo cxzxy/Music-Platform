@@ -2,7 +2,7 @@
   <div class="mvs">
     <div class="left">
       <h2>mv详情</h2>
-      <video :src="mvData.data.url" controls></video>
+      <video :src="mvUrl" controls></video>
       <div class="info">
         <img :src="picUrl" alt="" />
         <span class="name">{{ mvInfo.artistName }}</span>
@@ -39,32 +39,21 @@ export default {
       mvData: {},
       mvInfo: {},
       picUrl: "",
+      mvUrl: "",
     };
   },
   methods: {
     toMv(id) {
       this.$router.push(`/main/mv?id=${id}`);
+      this.$router.go(0);
     },
   },
-  watch: {
-    // '$route' (to, from) {
-    //   //监听路由是否变化
-    //   if (to.query.id != from.query.id) {
-    //     this.id = to.query.id;
-    //     this.init(); //重新加载数据
-    //   }
-    // },
-  },
+  watch: {},
   computed: {},
   created() {
-    // if (this.$route.query) {
-    //   this.id = this.$route.query.id;
-    //   this.init();
-    // }
     axios({
       method: "GET",
       url: "https://autumnfish.cn/mv/detail",
-
       params: {
         mvid: this.$route.query.id,
       },
@@ -72,8 +61,8 @@ export default {
       this.mvInfo = res.data.data;
       //获取歌手信息
       axios({
+        method: "GET",
         url: "https://autumnfish.cn/artists",
-        method: "get",
         params: {
           id: this.mvInfo.artists[0].id,
         },
@@ -89,9 +78,8 @@ export default {
         id: this.$route.query.id,
       },
     }).then((res) => {
-      this.mvData = res.data;
+      this.mvUrl = res.data.data.url;
       console.log(res.data);
-      //   console.log(this.mvData);
     });
 
     axios({
@@ -107,11 +95,7 @@ export default {
 .mvs {
   display: flex;
 }
-.left {
-  /* background-color: aqua; */
-}
 .right {
-  /* background-color: brown; */
   flex: 1;
   margin-left: 100px;
   text-align: center;
@@ -126,8 +110,6 @@ video {
   cursor: pointer;
 }
 .info {
-  /* width: 500px; */
-  /* background-color: black; */
   height: 100px;
   margin-top: 20px;
 }
@@ -135,17 +117,14 @@ video {
   float: left;
   margin-left: 20px;
   margin-top: 30px;
-  /* background-color: aqua; */
   font-weight: 600;
   font-size: 20px;
 }
 .info img {
-  /* display: inline-block; */
   float: left;
   width: 100px;
   height: 95px;
   border-radius: 50%;
-  /* background-color: brown; */
 }
 .mvinfo {
   margin-top: 10px;

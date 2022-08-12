@@ -7,20 +7,20 @@
           <div class="btitle">账户登录</div>
           <div class="bform">
             <input type="text" placeholder="请输入用户名" v-model="userName" />
-            <!-- <span class="errTips" v-if="emailError">* 用户名填写错误 *</span> -->
             <input
               type="password"
               placeholder="请输入密码"
               v-model="password"
             />
-            <!-- <span class="errTips" v-if="emailError">* 密码填写错误 *</span> -->
             <input
               type="text"
               placeholder="验证码"
               v-model="code"
               style="width: 25%; margin-right: 160px"
+              @keyup.enter="Login"
             />
             <div class="img"><img :src="codeUrl" alt="" /></div>
+            <div class="icon el-icon-refresh" @click="reFresh"></div>
             <div></div>
             <div></div>
             <button class="bbutton" @click="Login">登录</button>
@@ -62,40 +62,44 @@ export default {
         codeId: this.randomCode,
       }).then(
         (res) => {
+          console.log(res);
           if (res.code === 200) {
             const token = res.data.token;
-            console.log(token)
+            console.log(token);
             localStorage.setItem("accessToken", token);
-            localStorage.setItem('user',self.userName)
-            this.$store.commit('login',self.userName)
-            alert("登录成功");
+            localStorage.setItem("user", self.userName);
+            this.$store.commit("login", self.userName);
+            this.$message("登录成功");
             this.$router.push("/main/home");
+          } else if (res.code === 513) {
+            this.$message("账号或密码错误");
           } else {
-            alert(res.msg);
+            this.$message(res.msg);
           }
-          console.log(res)
+          console.log(res);
         },
         (err) => {
           console.log(err);
         }
       );
     },
-    goRegister(){
-        this.$router.push('/register')
+    goRegister() {
+      this.$router.push("/register");
     },
-    goHome(){
-        this.$router.push('/main/home')
-    }
+    goHome() {
+      this.$router.push("/main/home");
+    },
+    reFresh() {
+      this.randomCode = Math.random().toString(16).substring(3);
+      getCode("blob", { codeId: this.randomCode }).then((res) => {
+        this.codeUrl = window.URL.createObjectURL(res);
+      });
+    },
   },
   created() {
     this.randomCode = Math.random().toString(16).substring(3);
     getCode("blob", { codeId: this.randomCode }).then((res) => {
       this.codeUrl = window.URL.createObjectURL(res);
-        //   let binaryData = [];
-        //             binaryData.push(blob);
-        //             this.codeUrl = window.URL.createObjectURL(new Blob(binaryData));
-
-    // console.log(res)
     });
   },
 };
@@ -105,18 +109,16 @@ export default {
   width: 100vw;
   height: 100vh;
   box-sizing: border-box;
-  /* background-color: #1e2229; */
-  /* background-image: url('~assets/img/bgc.jpg'); */
   background-size: 100%;
 }
 .iconfont {
-    position: absolute;
-    font-size: 130px;
-    font-weight: 700;
-    color: #38a9ab;
-    top: 70px;
-    left: 150px;
-    cursor: pointer;
+  position: absolute;
+  font-size: 130px;
+  font-weight: 700;
+  color: #38a9ab;
+  top: 70px;
+  left: 150px;
+  cursor: pointer;
 }
 .contain {
   width: 60%;
@@ -124,12 +126,9 @@ export default {
   position: relative;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  /* background-color: #1d2028; */
-  /* opacity: 0.5; */
   background: transparent;
   border-radius: 20px;
-  /* box-shadow: 0 0 3px #f0f0f0, 0 0 6px #f0f0f0; */
+  transform: translate(-50%, -50%);
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.75);
 }
 .big-box {
@@ -138,9 +137,6 @@ export default {
   position: absolute;
   top: 0;
   left: 30%;
-  transform: translateX(0%);
-  transition: all 1s;
-  /* background-color: #1d2028; */
 }
 .big-contain {
   width: 100%;
@@ -157,7 +153,6 @@ export default {
   font-size: 24px;
   font-weight: 600;
   color: rgb(57, 167, 176);
-  /* padding-top: 10px;; */
 }
 .bform {
   margin-top: 80px;
@@ -169,14 +164,6 @@ export default {
   justify-content: space-around;
   align-items: center;
 }
-.bform .errTips {
-  display: block;
-  width: 50%;
-  text-align: left;
-  color: red;
-  font-size: 0.7em;
-  margin-left: 1em;
-}
 .bform input {
   width: 50%;
   height: 40px;
@@ -184,6 +171,7 @@ export default {
   border-bottom: 1px solid #1e2229;
   outline: none;
 }
+.icon,
 .img,
 .message,
 .count-down {
@@ -197,13 +185,18 @@ export default {
   top: 300px;
 }
 .img {
-  /* background-color: pink; */
   top: 255px;
+}
+.icon {
+  right: 150px;
+  top: 263px;
+}
+.icon:hover {
+  color: cadetblue;
 }
 .bbutton {
   width: 20%;
   height: 40px;
-  /* margin-top: 50px; */
   border-radius: 24px;
   border: none;
   outline: none;

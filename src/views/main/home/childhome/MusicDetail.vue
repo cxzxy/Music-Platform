@@ -1,7 +1,9 @@
 <template>
-  <div>
+  <div class="xxx">
     <div class="flex">
-      <div class="left"><img :src="song.pic" alt="" /></div>
+      <div class="left">
+        <img :src="song.pic" alt="" :style="animationState" />
+      </div>
       <div class="right">
         <h2>{{ song.name }}</h2>
         <div class="singer">
@@ -10,15 +12,15 @@
         <div class="zhuanji">
           专辑：<span>{{ song.name }}</span>
         </div>
-        <el-button
-          type="primary"
-          icon="el-icon-caret-right"
-          circle
-          class="button"
+        <div
+          class="button el-icon-video-play"
           @click="toplay"
-        ></el-button>
+          v-if="!isPlay"
+        ></div>
+        <div class="button el-icon-video-pause" @click="topause" v-else></div>
       </div>
       <ul class="edge">
+        <h2>相关歌曲</h2>
         <li
           v-for="(item, index) in songs"
           :key="index"
@@ -39,7 +41,12 @@
       </ul>
     </div>
     <div class="play">
-      <audio :src="song.url" controls="controls" ref="audio"></audio>
+      <audio
+        :src="song.url"
+        controls="controls"
+        ref="audio"
+        preload="none"
+      ></audio>
     </div>
   </div>
 </template>
@@ -52,31 +59,44 @@ export default {
     return {
       songs: [],
       song: {},
+      isPlay: false,
     };
-  },
-
-  watch: {
-    //监视路由变化
-    "$route.query.monthPlanId": " getRecommendMusic",
   },
   computed: {
     //拿到路由传来的数据
     getMusic() {
       return this.$route.query.id;
     },
+    state() {
+      if (this.isPlay) {
+        return "running";
+      } else {
+        return "paused";
+      }
+    },
+    animationState() {
+      return {
+        animationPlayState: this.state,
+      };
+    },
   },
   methods: {
     toplay() {
+      this.isPlay = true;
       this.$refs.audio.play();
+    },
+    topause() {
+      this.isPlay = false;
+      this.$refs.audio.pause();
     },
     toMusic(id) {
       this.$router.push(`/main/music?id=${id}`);
+      this.$router.go(0);
     },
   },
   created() {
     getRecommendMusic().then(
       (res) => {
-        // console.log(res)
         if (res.code === 200) {
           this.songs = res.data;
           const index = this.songs.findIndex((e) => e.id == this.getMusic);
@@ -85,7 +105,7 @@ export default {
         }
       },
       (err) => {
-        // console.log(err)
+        console.log(err);
       }
     );
   },
@@ -101,6 +121,16 @@ export default {
 .left img {
   width: 250px;
   border-radius: 50%;
+  border: 10px solid rgba(0, 0, 0, 0.3);
+  animation: rotateImg 10s linear infinite;
+}
+@keyframes rotateImg {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 .right {
   margin-left: 50px;
@@ -125,24 +155,24 @@ export default {
 }
 .button {
   margin-top: 20px;
-  font-size: 20px;
+  font-size: 40px;
+  color: #409eff;
+  cursor: pointer;
 }
 .play {
   position: fixed;
-  bottom: 10px;
+  bottom: -5px;
   background-color: #f1f3f4;
-  border-radius: 10px;
 }
 audio {
-  width: 800px;
-  height: 30px;
-  /* color: pink */
+  width: 955px;
+  height: 50px;
+  margin-left: -120px;
 }
 .edge li {
   position: relative;
   height: 100px;
   margin-top: 10px;
-  /* background-color: #3e8dd7; */
   cursor: pointer;
 }
 .edge li:hover {
@@ -153,6 +183,7 @@ audio {
 }
 .img img {
   width: 100px;
+  border-radius: 10px;
 }
 .edge > li > .info {
   position: absolute;

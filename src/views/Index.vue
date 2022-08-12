@@ -2,12 +2,12 @@
   <div>
     <nav-bar></nav-bar>
     <div class="main">
-        <router-view :key="$route.fullpath"></router-view>
+        <router-view></router-view>
     </div>
   </div>
 </template>
 <script>
-import NavBar from "components/common/NavBar.vue";
+import NavBar from "components/NavBar.vue";
 export default {
   name: "Index",
   components: {
@@ -21,7 +21,11 @@ export default {
 </script>
 <style scoped>
 .main {
-  /* border: 1px solid pink; */
+/* 上，右，下，左 */
   margin: 80px 100px 0px 300px;
+  margin-top: 80px;
+  margin-left: 300px;
+  height: 690px;
+  overflow-y: scroll;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <list-nav class="listNav"></list-nav>
-    <router-view class="music-detail" :key="key"></router-view>
+    <router-view class="music-detail" :key="$route.fullPath"></router-view>
   </div>
 </template>
 <script>
@@ -18,26 +18,23 @@ export default {
     return {};
   },
   methods: {},
-  computed: {
-    key(){
-        return this.$route.fullPath
-    }
-  }
+  computed: {},
 };
 </script>
 <style scoped>
 .listNav {
-  position: fixed;
-  height: 100%;
-  width: 19%;
+  float: left;
+  width: 23%;
   margin-top: -20px;
-  margin-left: -100px;
+  margin-left: -50px;
   padding-left: 60px;
+  /* height: 100vh */
+  height: 604px;
 }
 .music-detail {
-    /* background-color: pink; */
-    height: 100%;
-    margin-left: 200px;
-    width: 85%
+  height: 100%;
+  margin-left: 212px;
+  width: 70%;
+  border-top: 1px solid #f1f3f4;
 }
 </style>

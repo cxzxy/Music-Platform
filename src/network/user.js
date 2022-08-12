@@ -1,7 +1,7 @@
-import {request} from './request'
+import { request } from './request'
 
 //登录
-export function login(data){
+export function login(data) {
     return request({
         method: 'POST',
         url: '/login',
@@ -10,7 +10,7 @@ export function login(data){
 }
 
 //得到登录验证码
-export function getCode(responseType,params){
+export function getCode(responseType, params) {
     return request({
         method: 'GET',
         url: '/codes/captcha',
@@ -20,7 +20,7 @@ export function getCode(responseType,params){
 }
 
 //发送邮箱验证码
-export function sendEmailCode(params){
+export function sendEmailCode(params) {
     return request({
         method: 'GET',
         url: '/codes/sendVerificationCode',
@@ -29,7 +29,7 @@ export function sendEmailCode(params){
 }
 
 //检验邮箱验证码
-export function verifyEmailCode(params){
+export function verifyEmailCode(params) {
     return request({
         method: 'GET',
         url: '/codes/valid-code',
@@ -38,7 +38,7 @@ export function verifyEmailCode(params){
 }
 
 //注册
-export function register(data){
+export function register(data) {
     return request({
         method: 'POST',
         url: '/users/register',
